@@ -10,6 +10,8 @@
 const char cl_lum[]     = {' ', '.', ':', '-', '=', '+', '*', '#', '%', '@'}; // black -> white
 const int  cl_lum_count = 10;
 
+/* basic functions */
+
 // returns the current terminal width (number of columns)
 int cl_get_w() {
     struct winsize w;
@@ -26,45 +28,69 @@ int cl_get_h() {
     return w.ws_row;
 }
 
-// writes all characters of chars to terminal, given a width and height
-void cl_draw(char* chars, int w, int h) {
-    char line[w];
-    for(int j = 0; j < h; j++) {
-        for(int i = 0; i < w; i++) {
-            line[i] = chars[j * w + i];
-        }
-
-        if(j < h)
-            printf("%s\n", line);
-        else
-            printf("%s", line);
-    }
-}
-
 // moves cursor to (x, y)
 void cl_goto(int x, int y) { printf("\033[%d;%dH", y, x); }
 
 // clears the terminal
 void cl_clear() { printf("\033[H\033[J"); }
 
-// returns char* to array of size w * h
-// must be freed after use
-char* cl_get_canvas(int w, int h) {
-    char* array = (char*)malloc(w * h * sizeof(char));
-    for(int i = 0; i < w * h; i++) array[i] = ' ';
 
-    return array;
+/* canvas functions */
+typedef struct {
+    int w, h;
+    char* array;
+} Canvas;
+
+// writes all characters of chars to terminal, given a width and height
+void cl_draw_canvas(Canvas* c) {
+    char line[c->w];
+    for(int j = 0; j < c->h; j++) {
+        for(int i = 0; i < c->w; i++) {
+            line[i] = c->array[j * c->w + i];
+        }
+
+        if(j < c->h)
+            printf("%s\n", line);
+        else
+            printf("%s", line);
+    }
 }
 
-// draws a line from (x1, y1) to (x2, y2) with the character c
-void cl_line(char* canvas, int x1, int y1, int x2, int y2, char c) {
-    int dx = x2 - x1; 
-    int dy = y2 - y1;
+// returns Canvas* of size w * h
+// must be freed after use
+Canvas cl_get_canvas(int w, int h) {
+    Canvas c;
+    
+    c.w = w;
+    c.h = h;
 
-    cl_goto(x1, y1);
-    printf("%c", c);
-    cl_goto(x2, y2);
-    printf("%c", c);
+    c.array = (char*)malloc(w * h * sizeof(char));
+    for(int i = 0; i < w * h; i++) c.array[i] = ' ';
+
+    return c;
+}
+
+// frees canvas' char*
+void cl_free_canvas(Canvas* c) {
+    free(c->array);
+}
+
+// assigns char ch at (x, y) to Canvas c
+void cl_put_char(Canvas* c, int x, int y, char ch) {
+    c->array[y * c->w + x] = ch;
+}
+
+// writes char* str at (x, y) to Canvas c
+void cl_put_str(Canvas* c, int str_len, int x, int y, char* str) {
+    for(int i = 0; i < str_len; i++) {
+        c->array[y * c->w + x + i] = str[i];
+    }
+}
+
+// draws a line from (x1, y1) to (x2, y2) with the character ch
+void cl_line(Canvas* c, int x1, int y1, int x2, int y2, char ch) {
+    cl_put_char(c, x1, y1, ch);
+    cl_put_char(c, x2, y2, ch);
 }
 
 #endif
