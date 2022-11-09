@@ -42,6 +42,11 @@ typedef struct {
     char* array;
 } Canvas;
 
+void cl_clear_canvas(Canvas* c) {
+    for(int i = 0; i < c->w * c->h; i++)
+        c->array[i] = ' ';
+}
+
 // writes all characters of chars to terminal, given a width and height
 void cl_draw_canvas(Canvas* c) {
     char line[c->w];
@@ -94,12 +99,15 @@ void cl_line(Canvas* c, int x1, int y1, int x2, int y2, char ch) {
     int dy = y2 - y1;
     double m = (float)dy / (float)dx;
 
-    for(int i = 1; i < dx; i++) {
-        cl_put_char(c, x1 + i, y1 + round(i * m), ch);
+    if(fabs(m) <= 1) {
+        for(int i = 0; i <= dx; i++) {
+            cl_put_char(c, x1 + i, y1 + round(i * m), ch);
+        }
+    } else {
+        for(int j = 0; j <= dy; j++) {
+            cl_put_char(c, x1 + round(j * (1 / m)), y1 + j, ch);
+        }
     }
-
-    cl_put_char(c, x1, y1, ch);
-    cl_put_char(c, x2, y2, ch);
 }
 
 #endif
