@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 
 // ASCII luminescence gradient (assuming terminal uses white text & black background)
 const char cl_lum[]     = {' ', '.', ':', '-', '=', '+', '*', '#', '%', '@'}; // black -> white
@@ -89,6 +90,14 @@ void cl_put_str(Canvas* c, int str_len, int x, int y, char* str) {
 
 // draws a line from (x1, y1) to (x2, y2) with the character ch
 void cl_line(Canvas* c, int x1, int y1, int x2, int y2, char ch) {
+    int dx = x2 - x1; 
+    int dy = y2 - y1;
+    double m = (float)dy / (float)dx;
+
+    for(int i = 1; i < dx; i++) {
+        cl_put_char(c, x1 + i, y1 + round(i * m), ch);
+    }
+
     cl_put_char(c, x1, y1, ch);
     cl_put_char(c, x2, y2, ch);
 }
