@@ -49,11 +49,22 @@ void cl_clear() { printf("\033[H\033[J"); }
 
 // returns char* to array of size w * h
 // must be freed after use
-char* cl_get_array(int w, int h) {
+char* cl_get_canvas(int w, int h) {
     char* array = (char*)malloc(w * h * sizeof(char));
     for(int i = 0; i < w * h; i++) array[i] = ' ';
 
     return array;
+}
+
+// draws a line from (x1, y1) to (x2, y2) with the character c
+void cl_line(char* canvas, int x1, int y1, int x2, int y2, char c) {
+    int dx = x2 - x1; 
+    int dy = y2 - y1;
+
+    cl_goto(x1, y1);
+    printf("%c", c);
+    cl_goto(x2, y2);
+    printf("%c", c);
 }
 
 #endif

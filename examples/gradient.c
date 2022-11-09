@@ -11,7 +11,7 @@ int main() {
   
   float max_distance = sqrt(pow(abs(cx - w - 1), 2) + pow(abs(cy - h - 1), 2));
 
-  char* screen = cl_get_array(w, h);
+  char* screen = cl_get_canvas(w, h);
   for(int j = 0; j < h; j++) {
     for(int i = 0; i < w; i++) {
       float distance = sqrt(pow(abs(cx - i), 2) + pow(abs(cy - j), 2));

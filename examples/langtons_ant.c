@@ -5,7 +5,7 @@
 int main() {
   int w = cl_get_w();
   int h = cl_get_h() - 1;
-  char* screen = cl_get_array(w, h);
+  char* screen = cl_get_canvas(w, h);
 
   int plane[w * h];
   for(int i = 0; i < w * h; plane[i++] = 0);
