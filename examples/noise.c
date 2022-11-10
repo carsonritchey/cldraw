@@ -1,17 +1,14 @@
 #include "cldraw.h"
 
 int main() {
-  int w = cl_get_w();
-  int h = cl_get_h() - 1;
-
-  char* screen = cl_get_canvas(w, h);
-  for(int i = 0; i < w * h; i++) {
-    screen[i] = cl_lum[rand() % cl_lum_count];
+  Canvas canvas = cl_get_canvas(cl_get_w(), cl_get_h() - 1);
+  for(int i = 0; i < canvas.w * canvas.h; i++) {
+    canvas.array[i] = cl_lum[rand() % cl_lum_count];
   }
 
   cl_clear();
-  cl_draw(screen, w, h);
+  cl_draw_canvas(&canvas);
 
-  free(screen);
+  cl_free_canvas(&canvas);
   return 0;
 }

@@ -3,43 +3,33 @@
 #include "cldraw.h"
 
 int main() {
-  int w = cl_get_w();
-  int h = cl_get_h() - 1;
-  char* screen = cl_get_canvas(w, h);
+    Canvas canvas = cl_get_canvas(cl_get_w(), cl_get_h() - 1);
 
-  int plane[w * h];
-  for(int i = 0; i < w * h; plane[i++] = 0);
+    char on = '#', off = ' ';
+    
+    // 0 = left, 1 = up, 2 = right, 3 = down
+    int dir = 0;
+    int x = canvas.w / 2 - 1;
+    int y = canvas.h / 2 - 1;
 
-  // 0 = left, 1 = up, 2 = right, 3 = down
-  int dir = 0;
-  int x = w / 2 - 1;
-  int y = h / 2 - 1;
+    while(x < canvas.w && y < canvas.h && x >= 0 && y >= 0) {
+        if(canvas.array[canvas.w * y + x] == off) {
+            canvas.array[canvas.w * y + x] = on;
+            dir = (dir + 1) % 4;
+        } else {
+            canvas.array[canvas.w * y + x] = off;
+            dir = ((dir - 1) + 4) % 4;
+        }
 
-  for(int i = 0; x < w && y < h && x >= 0 && y >= 0; i++) {
-    if(!plane[w * y + x]) {
-      plane[w * y + x] = 1;
-      dir = (dir + 1) % 4;
-    } else {
-      plane[w * y + x] = 0;
-      dir = ((dir - 1) + 4) % 4;
+        if(dir == 0) x--;
+        else if(dir == 1) y--;
+        else if(dir == 2) x++;
+        else if(dir == 3) y++;
+
+        cl_draw_canvas(&canvas);
+        usleep(50 * 1000);
     }
 
-    if(dir == 0) x--;
-    if(dir == 1) y--;
-    if(dir == 2) x++;
-    if(dir == 3) y++;
-
-    for(int i = 0; i < w * h; i++) screen[i] = (plane[i]) ? '#' : ' ';
-    screen[w * y + x] = 'A';
-    cl_goto(0, 0);
-    printf("iteration %d", i);
-
-    cl_clear();
-    cl_draw(screen, w, h);
-
-    usleep(500 * 1000);
-  }
-
-  free(screen);
-  return 0;
+    cl_free_canvas(&canvas);
+    return 0;
 }

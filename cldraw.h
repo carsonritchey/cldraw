@@ -99,10 +99,12 @@ void cl_line(Canvas* c, int x1, int y1, int x2, int y2, char ch) {
     int dy = y2 - y1;
     double m = (float)dy / (float)dx;
 
+    // plot in terms of x
     if(fabs(m) <= 1) {
         for(int i = 0; i <= dx; i++) {
             cl_put_char(c, x1 + i, y1 + round(i * m), ch);
         }
+    // plot in terms of y
     } else {
         for(int j = 0; j <= dy; j++) {
             cl_put_char(c, x1 + round(j * (1 / m)), y1 + j, ch);

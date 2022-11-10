@@ -11,19 +11,19 @@ int main() {
   
   float max_distance = sqrt(pow(abs(cx - w - 1), 2) + pow(abs(cy - h - 1), 2));
 
-  char* screen = cl_get_canvas(w, h);
+  Canvas canvas = cl_get_canvas(w, h);
   for(int j = 0; j < h; j++) {
     for(int i = 0; i < w; i++) {
       float distance = sqrt(pow(abs(cx - i), 2) + pow(abs(cy - j), 2));
       int lum = round(distance / max_distance * cl_lum_count);
 
-      screen[w * j + i] = cl_lum[lum];
+      canvas.array[w * j + i] = cl_lum[lum];
     }
   }
 
   cl_clear();
-  cl_draw(screen, w, h);
+  cl_draw_canvas(&canvas);
 
-  free(screen);
+  cl_free_canvas(&canvas);
   return 0;
 }
