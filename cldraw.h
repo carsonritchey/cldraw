@@ -112,4 +112,16 @@ void cl_line(Canvas* c, int x1, int y1, int x2, int y2, char ch) {
     }
 }
 
+// draws a rect with dimensions (w, h) at (x, y)
+void cl_rect(Canvas* c, int x, int y, int w, int h, char ch) {
+    for(int i = 0; i < w; i++) {
+        cl_put_char(c, x+i, y, ch);
+        cl_put_char(c, x+i, y+h - 1, ch);
+    }
+    for(int j = 1; j < h - 1; j++) {
+        cl_put_char(c, x, y+j, ch);
+        cl_put_char(c, x+w - 1, y+j, ch);
+    }
+}
+
 #endif
