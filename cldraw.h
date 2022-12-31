@@ -37,6 +37,7 @@ void cl_clear() { printf("\033[H\033[J"); }
 
 
 /* canvas functions */
+
 typedef struct {
     int w, h;
     char* array;
@@ -79,6 +80,11 @@ Canvas cl_get_canvas(int w, int h) {
 // frees canvas' char*
 void cl_free_canvas(Canvas* c) {
     free(c->array);
+}
+
+// returns the char at (x, y)
+char cl_get_char(Canvas* c, int x, int y) {
+    return c->array[y * c->w + x];
 }
 
 // assigns char ch at (x, y) to Canvas c
